@@ -1,0 +1,391 @@
+{% extends "admin_base.html" %}
+
+
+{% block body %}
+<style>
+    #close {
+        width: 280px;
+        height: 240px;
+        /*border-radius: 25px;*/
+        border: 0px solid Black;
+        /* padding: 15px 15px 15px 15px; */
+        /* margin: 20px 20px 20px 20px; */
+        overflow: visible;
+        box-shadow: 5px 5px 2px #888888;
+        position: relative;
+    }
+
+    #x {
+        position: absolute;
+        background: red;
+        color: white;
+        top: -10px;
+        right: -10px;
+    }
+</style>
+
+<main>
+    <div class="container-fluid">
+        <h1 style="text-align:center; background-color: aquamarine;" class="p-6 mb-2 text-dark font-weight-bold">
+            Products</h1>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+
+        <div class="col-xl-12 col-md-12 col-sm-12">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    {% for message in messages %}
+                    {{ message }}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
+        {% endwith %}
+
+
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="card-body">
+
+                {% if edit_product == None %}
+
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Add New (Product)</li>
+                </ol>
+
+                <form action="{{url_for('insert_product')}}" method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-xl-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputName">Name</label>
+                                <input class="form-control py-4" id="inputName" name="name" type="text"
+                                    placeholder="Enter Name" required />
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputType">Category</label>
+
+                                <select class="form-control selectpicker" style="height: 50px;" name="category"
+                                    id="category" required>
+                                    <option value="" selected>--Select Category--</option>
+                                    <option value="Products">Products</option>
+                                    <option value="Service">Service</option>
+                                    <option value="Support">Support</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea2">Details</label>
+                                <textarea class="form-control rounded-0" name="details" id="details"
+                                    rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea2">Others</label>
+                                <textarea class="form-control rounded-0" name="others" id="others" rows="3"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea2">Select 1st Image</label>
+                                <input id="img1" accept="image/*" onchange="loadImage(event, 'image1')" name="img"
+                                    type="file" required />
+                            </div>
+                            <div id="close">
+                                <button type="button" onclick="remove_image(this, 'img1')" id="x">X</button>
+                                <img id="image1" class="image" width="100%" height="100%" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea2">Select 2nd Image</label>
+                                <input id="img2" accept="image/*" onchange="loadImage(event, 'image2')" name="img"
+                                    type="file" />
+                            </div>
+                            <div id="close">
+                                <button type="button" onclick="remove_image(this, 'img2')" id="x">X</button>
+                                <img id="image2" class="image" width="100%" height="100%" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea2">Select 3rd Image</label>
+                                <input id="img3" accept="image/*" onchange="loadImage(event, 'image3')" name="img"
+                                    type="file" />
+                            </div>
+                            <div id="close">
+                                <button type="button" onclick="remove_image(this, 'img3')" id="x">X</button>
+                                <img id="image3" class="image" width="100%" height="100%" />
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea2">Select 4th Image</label>
+                                <input id="img4" accept="image/*" onchange="loadImage(event, 'image4')" name="img"
+                                    type="file" />
+                            </div>
+                            <div id="close">
+                                <button type="button" onclick="remove_image(this, 'img4')" id="x">X</button>
+                                <img id="image4" class="image" width="100%" height="100%" />
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputQunatity">Qunatity</label>
+                                <input class="form-control py-4" id="qunatity" name="qunatity" min="0" type="number"
+                                    placeholder="Enter Quantity" required />
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputQunatity">Price</label>
+                                <input class="form-control py-4" id="price" name="price" min="0" type="number"
+                                    placeholder="Enter Price" required />
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputButton">Add Product</label>
+                                <div class="form-group mt-2 mb-0"><button type="submit" style="width: 60px;"
+                                        class="btn btn-primary btn-block">Add</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                {% else %}
+
+                <ol class="breadcrumb mb-4">
+                    <li class="breadcrumb-item active">Edit Products</li>
+                </ol>
+
+                <form action="{{url_for('update_product')}}" method="POST">
+                    <input type="hidden" value="{{ edit_product[0]}}" name="id">
+                    <div class="row">
+                        <div class="col-xl-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputName">Name</label>
+                                <input class="form-control py-4" id="inputName" value="{{ edit_product[1]}}" name="name"
+                                    type="text" placeholder="Enter Name" required />
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputType">Category</label>
+
+                                <select class="form-control selectpicker" value="{{ edit_product[2] }}"
+                                    style="height: 50px;" name="category" id="category" required>
+                                    {% if edit_product[2] == 'Products' %}
+                                    <option selected value="Products">Products</option>
+                                    <option value="Service">Service</option>
+                                    <option value="Support">Support</option>
+
+                                    {% elif edit_product[2] == 'Service' %}
+                                    <option selected value="Service">Service</option>
+                                    <option value="Products">Products</option>
+                                    <option value="Support">Support</option>
+                                    {% else %}
+                                    <option value="Female">Female</option>
+                                    <option value="Products">Products</option>
+                                    <option selected value="Support">Support</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-xl-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea2">Details</label>
+                                <textarea class="form-control rounded-0" name="details" id="details"
+                                    rows="3">{{ edit_product[3]}}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-6 col-md-6 col-sm-12">
+                            <div class="form-group">
+                                <label for="exampleFormControlTextarea2">Others</label>
+                                <textarea class="form-control rounded-0" name="others" id="others"
+                                    rows="3">{{ edit_product[4]}}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputQunatity">Qunatity</label>
+                                <input class="form-control py-4" id="qunatity" name="qunatity" min="0"
+                                    value="{{ edit_product[5]}}" type="number" placeholder="Enter Quantity" required />
+                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputQunatity">Price</label>
+                                <input class="form-control py-4" id="price" name="price" min="0"
+                                    value="{{ edit_product[6]}}" type="number" placeholder="Enter Price" required />
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-md-6 col-sm-12">
+                            <br>
+                            <div class="form-group">
+                                <label class="small mb-1" for="inputButton">Update Product</label>
+                                <div class="form-group mt-2 mb-0"><button type="submit" style="width: 80px;"
+                                        class="btn btn-primary btn-block">Update</button></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                {% endif %}
+
+            </div>
+        </div>
+
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table mr-1"></i>
+                Products List
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="dataTable" width="100%" cellspacing="0">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Sr.</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Details</th>
+                                <th>Others</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            {% for product in products %}
+                            <tr>
+                                <th>{{loop.index}}</th>
+                                <td>{{ product[1] }}</td>
+                                <td>{{ product[2] }}</td>
+                                <td>{{ product[3] }}</td>
+                                <td>{{ product[4] }}</td>
+                                <td>{{ product[5] }}</td>
+                                <td>{{ product[6] }}</td>
+                                <td><a href="/product?id={{product[0]}}">Edit</a></td>
+                                <td><a href="#" onclick="set_delete_buyer_path('{{product[0]}}')" data-toggle="modal"
+                                        data-target="#exampleModal">Delete</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 style="text-align: center;" class="modal-title" id="exampleModalLabel">Confirm?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure want to delete this Product?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">No</button>
+                        <a class="btn btn-secondary btn-danger" href="#" id="delete_product">Yes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+</main>
+
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+
+    function remove_image(ref, id) {
+        $('#' + id).val(null);
+        $(ref).parent().find('.image').attr('src', 'static/Capture.JPG');
+    }
+
+    $(document).ready(function () {
+
+        for (const el of document.querySelectorAll("[placeholder][data-slots]")) {
+            const pattern = el.getAttribute("placeholder"),
+                slots = new Set(el.dataset.slots || "_"),
+                prev = (j => Array.from(pattern, (c, i) => slots.has(c) ? j = i + 1 : j))(0),
+                first = [...pattern].findIndex(c => slots.has(c)),
+                accept = new RegExp(el.dataset.accept || "\\d", "g"),
+                clean = input => {
+                    input = input.match(accept) || [];
+                    return Array.from(pattern, c =>
+                        input[0] === c || slots.has(c) ? input.shift() || c : c
+                    );
+                },
+                format = () => {
+                    const [i, j] = [el.selectionStart, el.selectionEnd].map(i => {
+                        i = clean(el.value.slice(0, i)).findIndex(c => slots.has(c));
+                        return i < 0 ? prev[prev.length - 1] : back ? prev[i - 1] || first : i;
+                    });
+                    el.value = clean(el.value).join``;
+                    el.setSelectionRange(i, j);
+                    back = false;
+                };
+            let back = false;
+            el.addEventListener("keydown", (e) => back = e.key === "Backspace");
+            el.addEventListener("input", format);
+            el.addEventListener("focus", format);
+            el.addEventListener("blur", () => el.value === pattern && (el.value = ""));
+        }
+
+    });
+
+
+    var loadImage = function (event, id) {
+        var image = document.getElementById(id);
+        image.src = URL.createObjectURL(event.target.files[0]);
+
+    };
+
+    function set_delete_buyer_path(id) {
+        $("#delete_product").attr("href", "delete_product?id=" + id);
+    }
+
+</script>
+
+
+{% endblock %}
