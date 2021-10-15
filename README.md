@@ -2,7 +2,7 @@
 
 
 ## Introduction
-This project is live on Heroku Server at [UNIFY-SHOP](https://ecom-web-app.herokuapp.com/), written in flask with Mongo-DB. 
+This project is live on Heroku Server at [UNIFY-SHOP](https://ecom-web-app.herokuapp.com/), written in flask with SQLite. 
 
 ## ScreenShot
 
